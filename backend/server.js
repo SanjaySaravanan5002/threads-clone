@@ -9,8 +9,22 @@ import messageRoutes from "./routes/messageRoutes.js";
 import { v2 as cloudinary } from "cloudinary";
 import { app, server } from "./socket/socket.js";
 import job from "./cron/cron.js";
+import mongoose from 'mongoose';
 
 dotenv.config();
+
+const mongoURI = process.env.MONGO_URI;
+
+if (!mongoURI) {
+	throw new Error('MONGO_URI is not defined in environment variables');
+}
+
+mongoose.connect(mongoURI, {
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
+})
+.then(() => console.log('MongoDB connected'))
+.catch(err => console.error('MongoDB connection error:', err));
 
 connectDB();
 job.start();
